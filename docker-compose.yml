@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  rocketmq-nameserver:
+    image: foxiswho/rocketmq:4.8.0
+    container_name: rocketmq-nameserver
+    ports:
+      - "9876:9876"
+    volumes:
+      - ./logs:/opt/logs
+      - ./store:/opt/store
+    networks:
+      rmq:
+        aliases:
+          - rocketmq-nameserver
+    command: mqnamesrv
+
+  rocketmq-broker:
+    image: foxiswho/rocketmq:4.8.0
+    container_name: rocketmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+    volumes:
+      - ./logs:/opt/logs
+      - ./store:/opt/store
+      - ./conf/broker.conf:/etc/rocketmq/broker.conf
+    environment:
+      NAMESRV_ADDR: "rocketmq-nameserver:9876"
+      JAVA_OPT_EXT: "-Xms512M -Xmx512M -Xmn128m"
+    command: mqbroker -c /etc/rocketmq/broker.conf
+    depends_on:
+      - rocketmq-nameserver
+    networks:
+      rmq:
+        aliases:
+          - rocketmq-broker
+
+  rocketmq-dashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: rocketmq-dashboard
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rocketmq-nameserver
+    environment:
+      NAMESRV_ADDR: "rocketmq-nameserver:9876"
+      JAVA_OPTS: " -Drocketmq.namesrv.addr=rocketmq-nameserver:9876"
+    networks:
+      rmq:
+        aliases:
+          - rocketmq-dashboard
+
+networks:
+  rmq:
+    name: rmq
+    driver: bridge
