@@ -15,6 +15,6 @@ COPY ./notification-service/src /app/notification-service/src
 
 RUN mvn -o package -Pnotification-service
 
-EXPOSE 8080
+EXPOSE 8082
 
 CMD ["java", "-jar", "./notification-service/target/notification-service-0.0.1-SNAPSHOT.jar"]
