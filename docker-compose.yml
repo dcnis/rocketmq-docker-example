@@ -67,7 +67,7 @@ services:
     depends_on:
       - rocketmq-nameserver
     ports:
-      - "8082:8082"
+      - "8083:8083"
     networks:
       - rmq
 
