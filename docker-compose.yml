@@ -50,6 +50,27 @@ services:
         aliases:
           - rocketmq-dashboard
 
+
+  notification-service:
+    container_name: notification-service
+    image: notification-service-image:0.0.1-SNAPSHOT
+    depends_on:
+      - rocketmq-nameserver
+    ports:
+      - "8081:8081"
+    networks:
+      - rmq
+
+  order-service:
+    container_name: order-service
+    image: order-service-image:0.0.1-SNAPSHOT
+    depends_on:
+      - rocketmq-nameserver
+    ports:
+      - "8082:8082"
+    networks:
+      - rmq
+
 networks:
   rmq:
     name: rmq
