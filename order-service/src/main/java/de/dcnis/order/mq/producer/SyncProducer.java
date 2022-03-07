@@ -26,9 +26,8 @@ public class SyncProducer {
         for(int i = 0; i < maxMessages; i++){
             order.setId(i);
             order.setProduct("synchronous Product");
-            log.info("Producer sends synchronous newOrderMsg {}/{}", i, maxMessages);
             rocketMQTemplate.convertAndSend(Topic.ORDER_ADD_TOPIC.getValue(), order);
-            log.info("Synchronous order {} send successfully", order.getId());
+            log.info("Synchronous order {}/{} send successfully", i, maxMessages);
         }
 
         log.info("All orders synchronously delivered");
