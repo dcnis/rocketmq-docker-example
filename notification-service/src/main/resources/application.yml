@@ -1,6 +1,8 @@
 server.port: 8081
 
 rocketmq:
-  name-server: rocketmq-nameserver-a:9876
   consumer:
-    group: notification-consumer
+    nameserver-address: rocketmq-nameserver-a:9876
+    group-name: notification-consumer
+    topic: order-add-topic
+    consume-failure-retry-times: 3

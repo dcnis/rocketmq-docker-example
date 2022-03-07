@@ -1,27 +1,25 @@
 package de.dcnis.notification.listener;
 
-import de.dcnis.shared.domain.Order;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
-import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.springframework.stereotype.Service;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 /**
  * @author Dennis Schmidt (dcnis)
  */
-@Service
+@Component
 @Slf4j
-@RocketMQMessageListener(topic = "order-add-topic", consumerGroup = "notification-consumer_order-add-topic")
-public class NotificationNewOrderListener implements RocketMQListener<Order> {
+public class NotificationNewOrderListener implements MessageListenerConcurrently {
 
     @Override
-    public void onMessage(Order order) {
-        log.info("Handling {} order           {}", order.getProduct(), order.getId());
-
-        // send email to user
-
+    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+        log.info("Handling order {}", msgs);
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
-
-
 }
