@@ -84,6 +84,8 @@ services:
       - rocketmq-nameserver-a
     ports:
       - "8081:8081"
+    volumes:
+      - ./logs:/home/logs
     networks:
       - rmq
 
@@ -96,6 +98,8 @@ services:
       - rocketmq-nameserver-a
     ports:
       - "8083:8083"
+    volumes:
+      - ./logs:/home/logs
     networks:
       - rmq
 
