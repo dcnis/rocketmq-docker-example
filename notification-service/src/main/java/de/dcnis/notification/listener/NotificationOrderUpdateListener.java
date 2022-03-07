@@ -1,4 +1,4 @@
-package de.dcnis.notification;
+package de.dcnis.notification.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.dcnis.shared.domain.Order;
@@ -14,21 +14,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@RocketMQMessageListener(topic = "order-add-topic", consumerGroup = "notification-consumer_order-add-topic")
-public class NotificationNewOrderListener implements RocketMQListener<Order> {
-
-    @Autowired
-    ObjectMapper objectMapper;
-
+@RocketMQMessageListener(topic = "order-update-topic", consumerGroup = "notification-consumer_order-update-topic")
+public class NotificationOrderUpdateListener implements RocketMQListener<Order> {
 
     @Override
     public void onMessage(Order order) {
-        log.info("Receiving new order message {}", order);
+        log.info("Receiving update order message {}", order);
 
         // send email to user
-
-
-
 
     }
 
