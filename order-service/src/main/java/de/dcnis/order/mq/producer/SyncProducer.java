@@ -22,10 +22,11 @@ public class SyncProducer {
      * @param order templateOrder
      */
     public void sendUpdateSynchronously(Order order) {
-        for(int i = 0; i < 1000; i++){
+        int maxMessages = 5000;
+        for(int i = 0; i < maxMessages; i++){
             order.setId(i);
             order.setProduct("synchronous Product");
-            log.info("Producer sends synchronous newOrderMsg {}/{}", i, 999);
+            log.info("Producer sends synchronous newOrderMsg {}/{}", i, maxMessages);
             rocketMQTemplate.convertAndSend(Topic.ORDER_ADD_TOPIC.getValue(), order);
             log.info("Synchronous order {} send successfully", order.getId());
         }

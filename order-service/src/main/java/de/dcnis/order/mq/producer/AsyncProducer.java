@@ -30,7 +30,7 @@ public class AsyncProducer {
 
                 @Override
                 public void onException(Throwable throwable) {
-                    log.error("Problem occurred sending asynchronous order {}!", order.getId());
+                    log.error("Problem occurred sending asynchronous order {}!", throwable.getMessage());
                 }
             });
         }

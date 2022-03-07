@@ -35,11 +35,11 @@ public class OrderService {
         Instant finish = Instant.now();
         log.info("done sending orders synchronously in {} ms", Duration.between(start, finish).toMillis());
 
-        Instant asyncStart = Instant.now();
-        log.info("start sending orders asynchronously");
-        asyncProducer.sendOrderAsynchronously(order);
-        Instant asyncFinish = Instant.now();
-        log.info("done sending orders asynchronously in {} ms", Duration.between(asyncStart, asyncFinish).toMillis());
+//        Instant asyncStart = Instant.now();
+//        log.info("start sending orders asynchronously");
+//        asyncProducer.sendOrderAsynchronously(order);
+//        Instant asyncFinish = Instant.now();
+//        log.info("done sending orders asynchronously in {} ms", Duration.between(asyncStart, asyncFinish).toMillis());
 
     }
 
