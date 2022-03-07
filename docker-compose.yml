@@ -16,6 +16,7 @@ services:
   rocketmq-broker-a:
     image: foxiswho/rocketmq:4.8.0
     container_name: rocketmq-broker-a
+    restart: always
     ports:
       - "10909:10909"
       - "10911:10911"
@@ -26,8 +27,8 @@ services:
       - ./data/broker-a/conf/broker.conf:/etc/rocketmq/broker.conf
     environment:
       NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
-      JAVA_OPT_EXT: "-Xms512M -Xmx512M -Xmn128m"
-    command: mqbroker -c /etc/rocketmq/broker.conf
+      JAVA_OPT_EXT: "-server -Xms256m -Xmx1024m -Xmn512M"
+    command: sh mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
       - rocketmq-nameserver-a
     networks:
@@ -38,6 +39,7 @@ services:
   rocketmq-broker-b:
     image: foxiswho/rocketmq:4.8.0
     container_name: rocketmq-broker-b
+    restart: always
     ports:
       - "10929:10909"
       - "10931:10911"
@@ -48,8 +50,8 @@ services:
       - ./data/broker-b/conf/broker.conf:/etc/rocketmq/broker.conf
     environment:
       NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
-      JAVA_OPT_EXT: "-Xms512M -Xmx512M -Xmn128m"
-    command: mqbroker -c /etc/rocketmq/broker.conf
+      JAVA_OPT_EXT: "-server -Xms256m -Xmx1024m -Xmn512M"
+    command: sh mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
       - rocketmq-nameserver-a
     networks:
