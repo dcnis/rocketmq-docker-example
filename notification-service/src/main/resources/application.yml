@@ -1,6 +1,6 @@
 server.port: 8081
 
 rocketmq:
-  name-server: rocketmq-nameserver:9876
+  name-server: rocketmq-nameserver-a:9876
   consumer:
     group: notification-consumer

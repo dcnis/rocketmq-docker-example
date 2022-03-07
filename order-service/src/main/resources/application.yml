@@ -1,7 +1,7 @@
 server.port: 8083
 
 rocketmq:
-  name-server: rocketmq-nameserver:9876
+  name-server: rocketmq-nameserver-a:9876
   producer:
     group: order-service-producer-group
     send-message-timeout: 300000
