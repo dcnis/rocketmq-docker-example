@@ -1,20 +1,22 @@
-FROM maven:3.8.3-jdk-11 as maven_build
-WORKDIR /app
+FROM maven:3.8.3-jdk-11 as build
+WORKDIR /build
 
 # copy parent-pom
 COPY ./pom.xml .
 # copy child pom.xmls
-COPY ./shared/pom.xml /app/shared/
-COPY ./notification-service/pom.xml /app/notification-service/
+COPY ./shared/pom.xml /build/shared/
+COPY ./notification-service/pom.xml /build/notification-service/
 
 RUN mvn package -Pnotification-service
 
 # copy child module sources
-COPY ./shared/src /app/shared/src
-COPY ./notification-service/src /app/notification-service/src
+COPY ./shared/src /build/shared/src
+COPY ./notification-service/src /build/notification-service/src
 
 RUN mvn -o package -Pnotification-service
 
+FROM openjdk:11-jre-slim AS runtime
+WORKDIR /app
 EXPOSE 8082
-
-CMD ["java", "-jar", "./notification-service/target/notification-service-0.0.1-SNAPSHOT.jar"]
+COPY --from=build /build/notification-service/target .
+CMD ["java", "-jar", "./notification-service-0.0.1-SNAPSHOT.jar"]
