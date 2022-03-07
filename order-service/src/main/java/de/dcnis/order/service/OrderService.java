@@ -25,7 +25,6 @@ public class OrderService {
         // MQ-Producer (send msg "I got new order")
         rocketMQTemplate.convertAndSend("order-add-topic", order);
 
-
     }
 
 }

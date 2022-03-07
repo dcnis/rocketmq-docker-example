@@ -44,7 +44,7 @@ services:
       - rocketmq-nameserver
     environment:
       NAMESRV_ADDR: "rocketmq-nameserver:9876"
-      JAVA_OPTS: " -Drocketmq.namesrv.addr=rocketmq-nameserver:9876"
+      JAVA_OPTS: " -Drocketmq.namesrv.addr=rocketmq-nameserver:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
     networks:
       rmq:
         aliases:
