@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @Slf4j
 public class MQConsumerConfig {
+
     private DefaultMQPushConsumer consumer;
     
     @Value("${rocketmq.consumer.group-name}")

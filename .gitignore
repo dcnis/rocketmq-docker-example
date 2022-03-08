@@ -24,5 +24,14 @@ hs_err_pid*
 
 .idea
 target/
-data/**/*
-!data/broker*/conf/broker.conf
+data/broker-a/logs
+data/broker-a/store
+data/broker-a-s/logs
+data/broker-a-s/store
+data/broker-b/logs
+data/broker-b/store
+data/broker-b-s/logs
+data/broker-b-s/store
+data/nameserver-a/logs/rocketmqlogs
+data/nameserver-b/logs/rocketmqlogs
+data/rmqconsole/logs/consolelogs

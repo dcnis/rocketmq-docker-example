@@ -6,8 +6,19 @@ services:
     ports:
       - "9876:9876"
     volumes:
-      - ./data/nameserver-a/logs:/opt/logs
-    command: sh mqnamesrv
+      - ./data/nameserver-a/logs:/home/rocketmq/logs
+    command: mqnamesrv
+    networks:
+      - rmq
+
+  rocketmq-nameserver-b:
+    image: foxiswho/rocketmq:4.8.0
+    container_name: rocketmq-nameserver-b
+    ports:
+      - "9877:9876"
+    volumes:
+      - ./data/nameserver-b/logs:/home/rocketmq/logs
+    command: mqnamesrv
     networks:
       - rmq
 
@@ -22,7 +33,7 @@ services:
     ports:
       - "10910:10910"
     environment:
-      NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
       JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
     command: sh mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
@@ -41,9 +52,9 @@ services:
     ports:
       - "10911:10911"
     environment:
-      NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
       JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    command: sh mqbroker -c /etc/rocketmq/broker.conf
+    command: mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
       - rocketmq-nameserver-a
     networks:
@@ -60,9 +71,9 @@ services:
     ports:
       - "10920:10920"
     environment:
-      NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
       JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    command: sh mqbroker -c /etc/rocketmq/broker.conf
+    command: mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
       - rocketmq-nameserver-a
     networks:
@@ -79,9 +90,9 @@ services:
     ports:
       - "10921:10921"
     environment:
-      NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
       JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    command: sh mqbroker -c /etc/rocketmq/broker.conf
+    command: mqbroker -c /etc/rocketmq/broker.conf
     depends_on:
       - rocketmq-nameserver-a
     networks:
@@ -93,6 +104,7 @@ services:
       dockerfile: ./docker/notification-service.Dockerfile
     depends_on:
       - rocketmq-nameserver-a
+      - rocketmq-nameserver-b
     ports:
       - "8081:8081"
     volumes:
@@ -106,6 +118,7 @@ services:
       dockerfile: ./docker/order-service.Dockerfile
     depends_on:
       - rocketmq-nameserver-a
+      - rocketmq-nameserver-b
     ports:
       - "8083:8083"
     volumes:
@@ -120,9 +133,10 @@ services:
       - "8080:8080"
     depends_on:
       - rocketmq-nameserver-a
+      - rocketmq-nameserver-b
     environment:
-      NAMESRV_ADDR: "rocketmq-nameserver-a:9876"
-      JAVA_OPTS_EXT: "-server -Xms128m -Xmx128m -Xmn128m -Drocketmq.namesrv.addr=rocketmq-nameserver-a:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
+      JAVA_OPTS_EXT: "-server -Xms128m -Xmx128m -Xmn128m -Drocketmq.namesrv.addr=rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
     networks:
       - rmq
 
