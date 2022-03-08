@@ -283,7 +283,7 @@ roundtrips to the disc.
 ```
 
 ## 6. Setting up microservices
-notification-service is a Spring Boot Application and acts as RocketMQ Consumer.
+```notification-service``` is a Spring Boot Application and acts as RocketMQ Consumer.
 ```
   notification-service:
     container_name: notification-service
@@ -300,7 +300,7 @@ notification-service is a Spring Boot Application and acts as RocketMQ Consumer.
       - rmq
 ```
 
-order-service is a Spring Boot Application and acts as RocketMQ Producer.
+```order-service``` is a Spring Boot Application and acts as RocketMQ Producer.
 ```
   order-service:
     container_name: order-service
