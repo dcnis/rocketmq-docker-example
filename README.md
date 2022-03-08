@@ -66,6 +66,26 @@ We are setting up 2x Master broker. ````rocketmq-broker-a```` and ````rocketmq-b
       - rocketmq-nameserver-a
     networks:
       - rmq
+      
+
+  rocketmq-broker-b:
+    image: foxiswho/rocketmq:4.8.0
+    container_name: rocketmq-broker-b
+    restart: always
+    volumes:
+      - ./data/broker-b/logs:/opt/logs
+      - ./data/broker-b/store:/opt/store
+      - ./data/broker-b/conf/broker.conf:/etc/rocketmq/broker.conf
+    ports:
+      - "10920:10920"
+    environment:
+      NAMESRV_ADDR: "rocketmq-nameserver-a:9876;rocketmq-nameserver-b:9876"
+      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
+    command: mqbroker -c /etc/rocketmq/broker.conf
+    depends_on:
+      - rocketmq-nameserver-a
+    networks:
+      - rmq
 ```
 The store folder where the brokers store their messages is internally stored in ```/opt/store```<br>
 This can be configured using our ```./data/broker-a/conf/broker.conf```
