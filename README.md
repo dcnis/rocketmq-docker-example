@@ -1,5 +1,5 @@
-# rocketmq-docker-example
-A Quick start for how to use Apache RocketMQ with Docker
+# How to use RocketMQ with docker-compose.yml
+A Quick start for how to use Apache RocketMQ with Docker and spin up a RocketMQ Cluster using docker-compose.yml.
 
 This project should show the high availability of RocketMQ. That is why we are using:
 - 2x RocketMQ Nameserver
