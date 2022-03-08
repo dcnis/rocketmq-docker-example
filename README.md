@@ -318,6 +318,8 @@ roundtrips to the disc.
 ```
 
 
+# License
+[MIT](https://github.com/dcnis/rocketmq-docker-example/blob/main/LICENSE) *Do whatever you want with my stuff, just don't sue me* type of license. Copyright (C) dcnis
 
 
 
