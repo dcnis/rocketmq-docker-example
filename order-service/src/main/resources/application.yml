@@ -1,5 +1,13 @@
 server.port: 8083
 
+spring:
+  application.name: order-service
+  cloud:
+    zookeeper:
+      connect-string: zookeeper:2181
+      discovery:
+        enabled: true
+
 rocketmq:
   name-server: rocketmq-nameserver-a:9876
   producer:
@@ -10,3 +18,7 @@ rocketmq:
     retry-times-when-send-async-failed: 0
     retry-next-server: true
     retry-times-when-send-failed: 2
+
+logging:
+  level:
+    org.apache.zookeeper.ClientCnxn: WARN

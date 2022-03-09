@@ -1,8 +1,21 @@
 server.port: 8081
 
+spring:
+  application.name: notification-service
+  cloud:
+    zookeeper:
+      connect-string: zookeeper:2181
+      discovery:
+        enabled: true
+
+
 rocketmq:
   consumer:
     nameserver-address: rocketmq-nameserver-a:9876
     group-name: notification-consumer
     topic: order-add-topic
     consume-failure-retry-times: 3
+
+logging:
+  level:
+    org.apache.zookeeper.ClientCnxn: WARN

@@ -8,8 +8,13 @@ This project should show the high availability of RocketMQ. That is why we are u
 - 2x microservices
   - notification-service (acts as RocketMQ Consumer)
   - order-service (acts as RocketMQ Producer)
+- 1x Zookeeper (acts as Service Discovery Center and Loadbalancer for the microservices)
 
 This will be set up using docker-compose.yml
+
+## Before we start
+Increase your Docker Desktop RAM to at least **4 GB**. Otherwise docker might kill your containers because they run OUT OF MEMORY.<br>
+Go to "Docker Desktop -> Preferences -> Resources -> Memory"
 
 ## 1. Setting up RocketMQ Nameserver
 In our docker-compose.yml we are setting up our two RocketMQ Nameserver ```rocketmq-nameserver-a``` and ```rocketmq-nameserver-b```
@@ -315,6 +320,120 @@ roundtrips to the disc.
       - ./logs:/home/logs
     networks:
       - rmq
+```
+
+## 7. Setting up zookeeper
+
+We are using ```spring-cloud-starter-zookeeper-discovery``` to get Zookeeper as our Service Discovery Center.
+Afterwards we will instantiate two instances of notification-service, which consume our messages.
+If one of our notification-service dies, there will be no critical impact on our system.
+
+Our order-service will still has only one instance, as we need a specific endpoint to trigger our requests:
+```localhost:8083/newOrder```
+
+### 1. In parent pom.xml 
+
+```
+
+    <properties>
+        <spring.cloud-version>2021.0.1</spring.cloud-version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+```
+The ```spring.cloud-version``` must fit the spring-boot-version. In our case spring.cloud-version ```2021.0.x``` fits our spring-boot version ```2.6.x```.<br>
+For more information check https://spring.io/projects/spring-cloud
+
+### 2. In notification-service pom.xml
+
+```
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+</dependency>
+```
+
+### 3. In notificaiton-service application.yml
+The default connect-string is ```localhost:2181```<br>
+We change it to our container-name ```zookeeper:2181```<br>
+```
+spring:
+  application.name: notification-service
+  cloud:
+    zookeeper:
+      connect-string: zookeeper:2181
+      discovery:
+        enabled: true
+        
+logging:
+  level:
+    org.apache.zookeeper.ClientCnxn: WARN
+```
+
+### 4. Zookeeper in docker-compose.yml
+In your docker-compose.yml we will create a zookeeper instance and two notification-service instances.
+
+```
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: zookeeper:3.6
+    ports:
+      - "2181:2181"
+      - "8090:8080"
+    restart: always
+    networks:
+      - zknetwork
+      
+  notification-service-1:
+    container_name: notification-service-1
+    build:
+      dockerfile: ./docker/notification-service.Dockerfile
+    depends_on:
+      - rocketmq-nameserver-a
+      - rocketmq-nameserver-b
+      - zookeeper
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./logs/notification-service-1:/home/logs
+    networks:
+      - rmq
+      - zknetwork
+
+  notification-service-2:
+    container_name: notification-service-2
+    build:
+      dockerfile: ./docker/notification-service.Dockerfile
+    depends_on:
+      - rocketmq-nameserver-a
+      - rocketmq-nameserver-b
+      - zookeeper
+    ports:
+      - "8082:8081"
+    volumes:
+      - ./logs/notification-service-2:/home/logs
+    networks:
+      - rmq
+      - zknetwork
+      
+networks:
+  rmq:
+    name: rmq
+    driver: bridge
+  zknetwork:
+    name: zknetwork
+    driver: bridge
 ```
 
 
